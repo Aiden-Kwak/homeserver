@@ -1,0 +1,20 @@
+# secrets & env
+.env
+**/*.env
+cloudflared/*.json
+cloudflared/config.yml
+cloudflared/cert.pem
+
+# ACME/LE
+letsencrypt/
+acme.json
+
+# macOS & local
+**/.DS_Store
+**/*.log
+**/.venv
+**/__pycache__
+
+# docker artifacts
+**/dist/
+**/node_modules/

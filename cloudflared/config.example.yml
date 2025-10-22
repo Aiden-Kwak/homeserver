@@ -1,0 +1,7 @@
+# Example for a named tunnel (do NOT commit real UUID/paths into config.yml)
+tunnel: <YOUR-TUNNEL-UUID>
+credentials-file: /etc/cloudflared/<YOUR-TUNNEL-UUID>.json
+ingress:
+  - hostname: api.example.com
+    service: http://traefik:8081
+  - service: http_status:404

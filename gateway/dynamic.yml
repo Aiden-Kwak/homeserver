@@ -1,0 +1,33 @@
+http:
+  middlewares:
+    secure-headers:
+      headers:
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        stsPreload: true
+        contentTypeNosniff: true
+        frameDeny: true
+        browserXssFilter: true
+    ratelimit:
+      rateLimit:
+        average: 50
+        burst: 100
+    secure-chain:
+      chain:
+        middlewares:
+          - secure-headers
+          - ratelimit
+
+  services:
+    host-app:
+      loadBalancer:
+        servers:
+          - url: "http://host.docker.internal:8080"
+
+  routers:
+    host-router:
+      rule: "PathPrefix(`/`)"
+      entryPoints: ["web"]
+      service: "host-app"
+      middlewares:
+        - "secure-chain"

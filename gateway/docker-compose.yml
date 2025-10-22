@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  traefik:
+    image: traefik:v3.1
+    container_name: traefik
+    restart: unless-stopped
+    ports:
+      - "8081:8081"   # host 영향 최소화를 위해 80/443 미사용
+    command:
+      - --entrypoints.web.address=:8081
+      - --providers.docker.exposedbydefault=false
+      - --providers.file.filename=/dynamic.yml
+      - --api.dashboard=false
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./dynamic.yml:/dynamic.yml:ro
+    networks: [net]
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cf-tunnel
+    restart: unless-stopped
+    # 초기에는 quick tunnel(임시 도메인)로 시작
+    command: tunnel --url http://traefik:8081 --no-autoupdate
+    volumes:
+      - ../cloudflared:/etc/cloudflared
+    networks: [net]
+
+networks:
+  net: {}
